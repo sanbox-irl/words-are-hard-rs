@@ -37,12 +37,10 @@ pub fn generate_word(
 
 /// Generates a new rule
 pub fn generate_rule(
-    rules: &mut Vec<Rule>,
+    round: usize,
     rng: &mut ThreadRng,
     choices: impl Iterator<Item = char>,
-) {
-    let round = rules.len();
-
+) -> Rule {
     // okay if we're in the first three rounds, we ALWAYS do a conversion rule...
     if round < 3 {
         let target = choices.choose(rng).unwrap();
@@ -53,9 +51,7 @@ pub fn generate_rule(
             replace_with,
         });
 
-        rules.push(cnv);
-
-        return;
+        return cnv;
     }
 
     // on round 4, we *always* generate a weird rule...
@@ -69,14 +65,13 @@ pub fn generate_rule(
         } else {
             Rule::Remove(Remove(target))
         };
-        rules.push(rule);
 
-        return;
+        return rule;
     }
 
     // on subsequent rounds, we pick a random rule...
     let number: usize = rng.gen_range(0..10);
-    let new_rule = match number {
+    match number {
         0..=6 => {
             let target = choices.choose(rng).unwrap();
             let replace_with = rng.gen_range(LOWERCASE_CHARS);
@@ -97,7 +92,5 @@ pub fn generate_rule(
             Rule::Remove(Remove(target))
         }
         _ => unimplemented!(),
-    };
-
-    rules.push(new_rule);
+    }
 }

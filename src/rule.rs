@@ -30,9 +30,9 @@ impl Rule {
 impl fmt::Display for Rule {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Rule::Convert(cnv) => write!(f, "{} -> {}", cnv.target, cnv.replace_with),
-            Rule::Duplicate(dep) => write!(f, "{} x {}", dep.target, dep.count),
-            Rule::Remove(rm) => write!(f, "Remove {}", rm.0),
+            Rule::Convert(cnv) => write!(f, "{} \u{f061} {}", cnv.target, cnv.replace_with),
+            Rule::Duplicate(dep) => write!(f, "{} \u{f057} {}", dep.target, dep.count),
+            Rule::Remove(rm) => write!(f, "\u{f1f8} {}", rm.0),
         }
     }
 }

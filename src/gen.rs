@@ -6,7 +6,7 @@ use crate::*;
 pub fn generate_word(
     rng: &mut ThreadRng,
     previous_rules: &[Rule],
-) -> (&'static str, impl Iterator<Item = char>) {
+) -> (&'static str, impl Iterator<Item = char> + Clone) {
     let round = previous_rules.len();
 
     // these are our choices
@@ -39,16 +39,16 @@ pub fn generate_word(
 pub fn generate_rule(
     round: usize,
     rng: &mut ThreadRng,
-    choices: impl Iterator<Item = char>,
+    choices: impl Iterator<Item = char> + Clone,
 ) -> Rule {
     // okay if we're in the first three rounds, we ALWAYS do a conversion rule...
     if round < 3 {
         let target = choices.choose(rng).unwrap();
         let replace_with = rng.gen_range(LOWERCASE_CHARS);
 
-        let cnv = Rule::Convert(Convert {
+        let cnv = Rule::Convert(TargetDestination {
             target,
-            replace_with,
+            destination: replace_with,
         });
 
         return cnv;
@@ -56,17 +56,21 @@ pub fn generate_rule(
 
     // on round 4, we *always* generate a weird rule...
     if round == 4 {
-        let target = choices.choose(rng).unwrap();
+        let target = choices.clone().choose(rng).unwrap();
 
-        let rule = if rng.gen_bool(0.5) {
-            let count = rng.gen_range(2..5);
+        return match rng.gen_range(0..=2) {
+            0 => {
+                let count = rng.gen_range(2..5);
 
-            Rule::Duplicate(Duplicate { target, count })
-        } else {
-            Rule::Remove(Remove(target))
+                Rule::Duplicate(Duplicate { target, count })
+            }
+            1 => Rule::Remove(Remove(target)),
+            2 => Rule::Switch(TargetDestination {
+                target,
+                destination: choices.choose(rng).unwrap(),
+            }),
+            _ => unimplemented!(),
         };
-
-        return rule;
     }
 
     // on subsequent rounds, we pick a random rule...
@@ -76,9 +80,9 @@ pub fn generate_rule(
             let target = choices.choose(rng).unwrap();
             let replace_with = rng.gen_range(LOWERCASE_CHARS);
 
-            Rule::Convert(Convert {
+            Rule::Convert(TargetDestination {
                 target,
-                replace_with,
+                destination: replace_with,
             })
         }
         7..=8 => {

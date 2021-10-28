@@ -19,7 +19,7 @@ impl Game<8> {
     pub fn new() -> Self {
         let mut rng = rand::thread_rng();
 
-        let mut rules = [Rule::Convert(Convert::default()); 8];
+        let mut rules = [Rule::Convert(TargetDestination::default()); 8];
         let mut words: [WordData; 8] = Default::default();
 
         for i in 0..8 {

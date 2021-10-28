@@ -2,18 +2,22 @@ use std::fmt;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Rule {
-    Convert(Convert),
+    Convert(TargetDestination),
     Duplicate(Duplicate),
     Remove(Remove),
+    Switch(TargetDestination),
 }
 
 impl Rule {
     /// Applies the rule to the input, returning the output string.
     pub fn apply(self, input: &str) -> String {
         match self {
-            Rule::Convert(cnv_data) => cnv_data.apply(input),
+            Rule::Convert(cnv_data) => {
+                input.replace(cnv_data.target, &format!("{}", cnv_data.destination))
+            }
             Rule::Duplicate(dep) => dep.apply(input),
             Rule::Remove(rmv) => rmv.apply(input),
+            Rule::Switch(target_destination) => switcher(&target_destination, input),
         }
     }
 
@@ -23,6 +27,7 @@ impl Rule {
             Rule::Convert(cnv) => cnv.target,
             Rule::Duplicate(dup) => dup.target,
             Rule::Remove(rmv) => rmv.0,
+            Rule::Switch(td) => td.target,
         }
     }
 }
@@ -30,23 +35,50 @@ impl Rule {
 impl fmt::Display for Rule {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Rule::Convert(cnv) => write!(f, "{} \u{f061} {}", cnv.target, cnv.replace_with),
+            Rule::Convert(cnv) => write!(f, "{} \u{f061} {}", cnv.target, cnv.destination),
             Rule::Duplicate(dep) => write!(f, "{} \u{f057} {}", dep.target, dep.count),
             Rule::Remove(rm) => write!(f, "\u{f1f8} {}", rm.0),
+            Rule::Switch(td) => write!(f, "{} \u{f362} {}", td.target, td.destination),
         }
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
-pub struct Convert {
-    pub target: char,
-    pub replace_with: char,
+fn switcher(td: &TargetDestination, input: &str) -> String {
+    let mut output_string = String::new();
+
+    let mut char_iter = input.chars();
+
+    while let Some(char) = char_iter.next() {
+        if char == td.target {
+            // look forward now...
+            let mut mini_output = String::new();
+            mini_output.push(td.target);
+
+            for char in &mut char_iter {
+                if char == td.destination {
+                    // lol i REFUSE to do this slower
+                    unsafe {
+                        mini_output.as_bytes_mut()[0] = td.destination as u8;
+                    }
+                    mini_output.push(td.target);
+                    break;
+                } else {
+                    mini_output.push(char);
+                }
+            }
+            output_string.push_str(&mini_output);
+        } else {
+            output_string.push(char);
+        }
+    }
+
+    output_string
 }
 
-impl Convert {
-    pub fn apply(self, input: &str) -> String {
-        input.replace(self.target, &format!("{}", self.replace_with))
-    }
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
+pub struct TargetDestination {
+    pub target: char,
+    pub destination: char,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
@@ -93,10 +125,10 @@ mod tests {
 
     #[test]
     fn convert() {
-        let ex = Convert {
+        let ex = Rule::Convert(TargetDestination {
             target: 'b',
-            replace_with: 'a',
-        };
+            destination: 'a',
+        });
 
         assert_eq!(ex.apply("bob"), "aoa");
         assert_eq!(ex.apply("bbb"), "aaa");
@@ -122,5 +154,17 @@ mod tests {
         assert_eq!(ex.apply("bob"), "o");
         assert_eq!(ex.apply("bbb"), "");
         assert_eq!(ex.apply("aoa"), "aoa");
+    }
+
+    #[test]
+    fn switch() {
+        let ex = TargetDestination {
+            target: 'a',
+            destination: 'b',
+        };
+
+        assert_eq!(switcher(&ex, "abba"), "baba");
+        assert_eq!(switcher(&ex, "aobobabrt"), "boaobbart");
+        assert_eq!(switcher(&ex, "bca"), "bca");
     }
 }

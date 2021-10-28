@@ -1,3 +1,8 @@
+#![allow(clippy::bool_comparison)]
+#![deny(rust_2021_compatibility)]
+#![deny(rust_2018_idioms)]
+
+mod gen;
 mod rule;
 use rule::*;
 
@@ -5,46 +10,20 @@ mod words;
 pub use words::{LOWERCASE_CHARS, WORDS};
 
 use console::style;
-use rand::prelude::*;
 
 fn main() {
     let mut rng = rand::thread_rng();
     let mut rules = vec![];
-    let input = std::io::stdin();
-    let mut guess = String::new();
+    let mut guess: String;
 
-    let mut console = console::Term::stdout();
+    let console = console::Term::stdout();
 
-    'outer: for _ in 0..7 {
+    'outer: for _ in 0..8 {
         // first, generate our new word!
-        let backing_word = *WORDS.choose(&mut rng).unwrap();
+        let (backing_word, selection_range) = gen::generate_word(&mut rng, &rules);
 
-        // then make a new rule...
-        let number: usize = rng.gen_range(0..10);
-        let new_rule = match number {
-            0..=7 => {
-                let target = backing_word.chars().choose(&mut rng).unwrap();
-                let replace_with = rng.gen_range(LOWERCASE_CHARS);
-
-                Rule::Convert(Convert {
-                    target,
-                    replace_with,
-                })
-            }
-            8 => {
-                let target = backing_word.chars().choose(&mut rng).unwrap();
-                let count = rng.gen_range(2..5);
-
-                Rule::Duplicate(Duplicate { target, count })
-            }
-            9 => {
-                let target = backing_word.chars().choose(&mut rng).unwrap();
-                Rule::Remove(Remove(target))
-            }
-            _ => unimplemented!(),
-        };
-
-        rules.push(new_rule);
+        // and get a new rule!
+        gen::generate_rule(&mut rules, &mut rng, selection_range);
 
         // okay GOOD LUCK PLAYER!
         let mut first_time = true;

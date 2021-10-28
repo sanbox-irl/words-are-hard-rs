@@ -16,6 +16,15 @@ impl Rule {
             Rule::Remove(rmv) => rmv.apply(input),
         }
     }
+
+    /// Gets the target of the given rule.
+    pub fn target(self) -> char {
+        match self {
+            Rule::Convert(cnv) => cnv.target,
+            Rule::Duplicate(dup) => dup.target,
+            Rule::Remove(rmv) => rmv.0,
+        }
+    }
 }
 
 impl fmt::Display for Rule {

@@ -1,7 +1,9 @@
+use std::fmt;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Rule {
     Convert(Convert),
-    Duplication(Duplicate),
+    Duplicate(Duplicate),
     Remove(Remove),
 }
 
@@ -10,8 +12,18 @@ impl Rule {
     pub fn apply(self, input: &str) -> String {
         match self {
             Rule::Convert(cnv_data) => cnv_data.apply(input),
-            Rule::Duplication(dep) => dep.apply(input),
+            Rule::Duplicate(dep) => dep.apply(input),
             Rule::Remove(rmv) => rmv.apply(input),
+        }
+    }
+}
+
+impl fmt::Display for Rule {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Rule::Convert(cnv) => write!(f, "{} -> {}", cnv.target, cnv.replace_with),
+            Rule::Duplicate(dep) => write!(f, "{} x {}", dep.target, dep.count),
+            Rule::Remove(rm) => write!(f, "Remove {}", rm.0),
         }
     }
 }
@@ -49,7 +61,7 @@ impl Duplicate {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
-pub struct Remove(char);
+pub struct Remove(pub char);
 
 impl Remove {
     pub fn apply(self, input: &str) -> String {

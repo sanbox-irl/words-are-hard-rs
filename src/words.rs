@@ -1,3 +1,5 @@
+pub const LOWERCASE_CHARS: std::ops::Range<char> = 'a'..'z';
+
 pub static WORDS: &[&str] = &[
     "information",
     "available",

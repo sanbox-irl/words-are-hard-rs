@@ -1,15 +1,5 @@
-#![allow(clippy::bool_comparison)]
-#![deny(rust_2021_compatibility)]
-#![deny(rust_2018_idioms)]
-
-mod gen;
-mod rule;
-use rule::*;
-
-mod words;
-pub use words::{LOWERCASE_CHARS, WORDS};
-
 use console::style;
+use words_are_hard::*;
 
 fn main() {
     let mut rng = rand::thread_rng();

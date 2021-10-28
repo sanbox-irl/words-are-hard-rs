@@ -4,11 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [lib]
-name = "words-are-hard-"
+name = "words_are_hard"
 path = "src/lib.rs"
 
 [[bin]]
-name = "mybin"
+name = "words_are_hard_bin"
 path = "src/bin.rs"
 
 [dependencies]

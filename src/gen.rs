@@ -15,6 +15,7 @@ pub fn generate_word(
     let word = if round < 5 {
         *WORDS.choose(rng).unwrap()
     } else {
+        // make it a pipelined selection...
         WORDS
             .iter()
             .filter(|w| w.chars().any(|chr| choices.contains(&chr)))
@@ -22,10 +23,16 @@ pub fn generate_word(
             .unwrap()
     };
 
-    (
-        word,
-        word.chars().filter(move |v| choices.contains(v) == false),
-    )
+    let selection: Vec<_> = if round < 2 {
+        let mut chars = word.chars();
+        vec![chars.next().unwrap(), chars.last().unwrap()]
+    } else {
+        word.chars()
+            .filter(move |v| choices.contains(v) == false)
+            .collect()
+    };
+
+    (word, selection.into_iter())
 }
 
 /// Generates a new rule

@@ -38,7 +38,7 @@ impl fmt::Display for Rule {
             Rule::Convert(cnv) => write!(f, "{} \u{f061} {}", cnv.target, cnv.destination),
             Rule::Duplicate(dep) => write!(f, "{} \u{f057} {}", dep.target, dep.count),
             Rule::Remove(rm) => write!(f, "\u{f1f8} {}", rm.0),
-            Rule::Switch(td) => write!(f, "{} \u{f362} {}", td.target, td.destination),
+            Rule::Switch(td) => write!(f, "{} \u{f07e} {}", td.target, td.destination),
         }
     }
 }

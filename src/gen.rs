@@ -76,7 +76,7 @@ pub fn generate_rule(
     // on subsequent rounds, we pick a random rule...
     let number: usize = rng.gen_range(0..10);
     match number {
-        0..=6 => {
+        0..=4 => {
             let target = choices.choose(rng).unwrap();
             let replace_with = rng.gen_range(LOWERCASE_CHARS);
 
@@ -85,6 +85,10 @@ pub fn generate_rule(
                 destination: replace_with,
             })
         }
+        5..=6 => Rule::Switch(TargetDestination {
+            target: choices.clone().choose(rng).unwrap(),
+            destination: choices.choose(rng).unwrap(),
+        }),
         7..=8 => {
             let target = choices.choose(rng).unwrap();
             let count = rng.gen_range(2..5);

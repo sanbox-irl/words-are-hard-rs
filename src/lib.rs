@@ -31,7 +31,7 @@ impl Game<8> {
 
             // okay GOOD LUCK PLAYER!
             let mut hard_word = secret.to_string();
-            for rule in rules[0..i].iter() {
+            for rule in rules[0..=i].iter() {
                 hard_word = rule.apply(&hard_word);
             }
 
@@ -78,9 +78,9 @@ impl<'a, const N: usize> Iterator for Iter<'a, N> {
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.cursor < N {
-            self.cursor += 1;
-            let rules = &self.game.rules[0..self.cursor];
             let word_data = &self.game.words[self.cursor];
+            let rules = &self.game.rules[0..=self.cursor];
+            self.cursor += 1;
 
             Some(RoundData { rules, word_data })
         } else {

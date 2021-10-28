@@ -3,7 +3,13 @@ name = "words-are-hard"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "words-are-hard-"
+path = "src/lib.rs"
+
+[[bin]]
+name = "mybin"
+path = "src/bin.rs"
 
 [dependencies]
 dialoguer = "0.9"

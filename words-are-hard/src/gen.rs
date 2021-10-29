@@ -9,7 +9,7 @@ pub fn generate_word(
 ) -> (&'static str, impl Iterator<Item = char> + Clone) {
     let round = previous_rules.len();
 
-    // these are our choices
+    // these are our choices tyo
     let choices: std::collections::HashSet<_> = previous_rules.iter().map(|v| v.target()).collect();
 
     let word = if round < 5 {

@@ -1,3 +1,5 @@
+#![allow(clippy::bool_comparison)]
+
 mod gui;
 mod words;
 

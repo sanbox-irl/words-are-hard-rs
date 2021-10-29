@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use dauga::{glam::UVec2, Accumulator, AnyResult, Clock, GuiRenderer, Input, Platform, Window};
+use dauga::{glam::UVec2, Accumulator, AnyResult, Clock, GuiRenderer, Input, Platform, ThemeManager, Window};
 use words_are_hard::ChallengeInstruction;
 
 use crate::gui::Gui;
@@ -21,6 +21,10 @@ impl Words {
         let mut imgui_platform = Platform::new(&window);
 
         let input = Input::new();
+        // this is its whole point!
+        let theme_manager = ThemeManager::new(dauga::DummyPreferences);
+        theme_manager.initialize_style(imgui_platform.context());
+
         let renderer = GuiRenderer::new(
             window.gl_context(),
             &mut imgui_platform,

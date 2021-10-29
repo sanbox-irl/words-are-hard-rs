@@ -17,8 +17,17 @@ impl Gui {
     pub fn draw(&mut self, ui: &Ui, game_data: &HashMap<String, Vec<ChallengeInstruction>>) {
         self.menu_bar(ui, game_data);
 
+        let mut game_delete = None;
+
         for (name, game) in self.games.iter_mut() {
-            if let Some(_t) = ui.window(name).always_auto_resize(true).resizable(false).begin() {
+            let mut opened = true;
+            if let Some(_t) = ui
+                .window(name)
+                .always_auto_resize(true)
+                .resizable(false)
+                .opened(&mut &mut opened)
+                .begin()
+            {
                 if let Some(round_data) = game.game.round_data() {
                     ui.text("Rules:");
                     for (i, rule) in round_data.rules.iter().enumerate() {
@@ -44,21 +53,29 @@ impl Gui {
                     ui.same_line();
                     pressed_enter |= ui.button(dauga::font_awesome::strs::CHECK);
                     ui.same_line();
-                    if ui.button(dauga::font_awesome::strs::CROSS) {
+                    if ui.button(dauga::font_awesome::strs::TIMES) {
                         game.guess.clear();
                     }
 
                     if pressed_enter {
-                        game.guess.clear();
-
                         if round_data.word_data.secret == game.guess {
                             game.game.advance_game();
                         }
+
+                        game.guess.clear();
                     }
                 } else {
                     ui.text("Good job! Thanks for playing!");
                 }
             }
+
+            if opened == false {
+                game_delete = Some(name.clone());
+            }
+        }
+
+        if let Some(game_del) = game_delete {
+            self.games.remove(&game_del);
         }
     }
 

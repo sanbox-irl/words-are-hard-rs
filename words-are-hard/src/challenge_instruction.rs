@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::Rule;
 
 /// Deserialize the available challenges
-pub fn deserialize_challenges<P: AsRef<std::path::Path>>(path: P) -> HashMap<String, ChallengeInstruction> {
+pub fn deserialize_challenges<P: AsRef<std::path::Path>>(path: P) -> HashMap<String, Vec<ChallengeInstruction>> {
     let txt = std::fs::read_to_string(path).unwrap();
 
     serde_json::from_str(&txt).unwrap()

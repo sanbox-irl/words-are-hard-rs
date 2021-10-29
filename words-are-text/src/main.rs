@@ -4,7 +4,20 @@ use words_are_hard::*;
 fn main() {
     let mut guess: String;
 
-    let game = Game::new_instructions([
+    let game = [
+        ChallengeInstruction::new(Rule::Convert(TargetDestination::new('r', 'e')), "arbitrary"),
+        ChallengeInstruction::new(Rule::Convert(TargetDestination::new('i', 't')), "warranties"),
+        ChallengeInstruction::new(Rule::Convert(TargetDestination::new('n', 'o')), "signatures"),
+        ChallengeInstruction::new(Rule::Remove(Remove('h')), "horoscope"),
+        ChallengeInstruction::new(Rule::Duplicate(Duplicate::new('c', 2)), "helicopter"),
+        ChallengeInstruction::new(Rule::Switch(TargetDestination::new('c', 'e')), "convicted"),
+    ];
+
+    let serialized = serde_json::to_string_pretty(&game).unwrap();
+    println!("{}", serialized);
+    return;
+
+    let game = Game::new_instructions(&[
         ChallengeInstruction::new(Rule::Convert(TargetDestination::new('r', 'e')), "arbitrary"),
         ChallengeInstruction::new(Rule::Convert(TargetDestination::new('i', 't')), "warranties"),
         ChallengeInstruction::new(Rule::Convert(TargetDestination::new('n', 'o')), "signatures"),

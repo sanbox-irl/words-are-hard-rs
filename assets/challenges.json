@@ -1,1 +1,55 @@
-{}
+{
+  "medium": [
+    {
+      "rule": {
+        "Convert": {
+          "target": "r",
+          "destination": "e"
+        }
+      },
+      "word": "arbitrary"
+    },
+    {
+      "rule": {
+        "Convert": {
+          "target": "i",
+          "destination": "t"
+        }
+      },
+      "word": "warranties"
+    },
+    {
+      "rule": {
+        "Convert": {
+          "target": "n",
+          "destination": "o"
+        }
+      },
+      "word": "signatures"
+    },
+    {
+      "rule": {
+        "Remove": "h"
+      },
+      "word": "horoscope"
+    },
+    {
+      "rule": {
+        "Duplicate": {
+          "target": "c",
+          "count": 2
+        }
+      },
+      "word": "helicopter"
+    },
+    {
+      "rule": {
+        "Switch": {
+          "target": "c",
+          "destination": "e"
+        }
+      },
+      "word": "convicted"
+    }
+  ]
+}

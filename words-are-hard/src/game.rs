@@ -1,17 +1,20 @@
 use crate::{gen, ChallengeInstruction, Rule, TargetDestination};
 
 /// The main struct of the game.
-pub struct Game<const N: usize> {
-    rules: [Rule; N],
-    words: [WordData; N],
+pub struct Game {
+    rules: Vec<Rule>,
+    words: Vec<WordData>,
+    len: usize,
+
+    current_round: usize,
 }
 
-impl Game<8> {
+impl Game {
     pub fn new() -> Self {
         let mut rng = rand::thread_rng();
 
-        let mut rules = [Rule::Convert(TargetDestination::default()); 8];
-        let mut words: [WordData; 8] = Default::default();
+        let mut rules = vec![Rule::Convert(TargetDestination::default()); 8];
+        let mut words = vec![WordData::default(); 8];
 
         for i in 0..8 {
             // first, generate our new word!
@@ -32,19 +35,42 @@ impl Game<8> {
             };
         }
 
-        Game { rules, words }
+        Game {
+            rules,
+            words,
+            len: 8,
+            current_round: 0,
+        }
+    }
+
+    /// Get a reference to the game's len.
+    pub fn len(&self) -> usize {
+        self.len
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
+    pub fn advance_game(&mut self) {
+        self.current_round += 1;
+    }
+
+    pub fn round_data(&self) -> Option<RoundData<'_>> {
+        let word_data = &self.words[self.current_round];
+        let rules = &self.rules[0..=self.current_round];
+
+        Some(RoundData { rules, word_data })
     }
 }
 
-impl<const N: usize> Game<N>
-where
-    [WordData; N]: Default,
-{
-    pub fn new_instructions(instructions: [ChallengeInstruction; N]) -> Self {
-        let mut rules = [Rule::Convert(TargetDestination::default()); N];
-        let mut words: [WordData; N] = Default::default();
+impl Game {
+    pub fn new_instructions(instructions: &[ChallengeInstruction]) -> Self {
+        let len = instructions.len();
+        let mut rules = vec![Rule::Convert(TargetDestination::default()); len];
+        let mut words = vec![WordData::default(); len];
 
-        for (i, instruction) in instructions.into_iter().enumerate() {
+        for (i, instruction) in instructions.iter().enumerate() {
             rules[i] = instruction.rule;
 
             let mut hard_word = instruction.word.to_string();
@@ -53,21 +79,26 @@ where
             }
 
             let word_data = WordData {
-                secret: instruction.word,
+                secret: instruction.word.clone(),
                 hard_word,
             };
             words[i] = word_data;
         }
 
-        Self { rules, words }
+        Self {
+            rules,
+            words,
+            len,
+            current_round: 0,
+        }
     }
 
-    pub fn iter(&self) -> Iter<'_, N> {
+    pub fn iter(&self) -> Iter<'_> {
         Iter { game: self, cursor: 0 }
     }
 }
 
-impl Default for Game<8> {
+impl Default for Game {
     fn default() -> Self {
         Self::new()
     }
@@ -78,22 +109,22 @@ pub struct RoundData<'a> {
     pub word_data: &'a WordData,
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct WordData {
     pub secret: String,
     pub hard_word: String,
 }
 
-pub struct Iter<'a, const N: usize> {
-    game: &'a Game<N>,
+pub struct Iter<'a> {
+    game: &'a Game,
     cursor: usize,
 }
 
-impl<'a, const N: usize> Iterator for Iter<'a, N> {
+impl<'a> Iterator for Iter<'a> {
     type Item = RoundData<'a>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.cursor < N {
+        if self.cursor < self.game.len() {
             let word_data = &self.game.words[self.cursor];
             let rules = &self.game.rules[0..=self.cursor];
             self.cursor += 1;
@@ -102,5 +133,9 @@ impl<'a, const N: usize> Iterator for Iter<'a, N> {
         } else {
             None
         }
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        (self.game.len - self.cursor, Some(self.game.len - self.cursor))
     }
 }

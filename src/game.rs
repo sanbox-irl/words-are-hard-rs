@@ -1,4 +1,4 @@
-use crate::{gen, Rule, TargetDestination};
+use crate::{gen, ChallengeInstruction, Rule, TargetDestination};
 
 /// The main struct of the game.
 pub struct Game<const N: usize> {
@@ -37,7 +37,7 @@ impl<const N: usize> Game<N>
 where
     [WordData; N]: Default,
 {
-    pub fn new_instructions(instructions: [GameInstruction; N]) -> Self {
+    pub fn new_instructions(instructions: [ChallengeInstruction; N]) -> Self {
         let mut rules = [Rule::Convert(TargetDestination::default()); N];
         let mut words: [WordData; N] = Default::default();
 
@@ -67,18 +67,6 @@ where
 impl Default for Game<8> {
     fn default() -> Self {
         Self::new()
-    }
-}
-
-#[derive(Debug)]
-pub struct GameInstruction {
-    rule: Rule,
-    word: &'static str,
-}
-
-impl GameInstruction {
-    pub const fn new(rule: Rule, word: &'static str) -> Self {
-        Self { rule, word }
     }
 }
 

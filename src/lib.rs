@@ -4,7 +4,9 @@
 
 pub mod gen;
 
+mod challenge_instruction;
 mod game;
+pub use challenge_instruction::ChallengeInstruction;
 pub use game::*;
 
 mod rule;

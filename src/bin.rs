@@ -5,12 +5,12 @@ fn main() {
     let mut guess: String;
 
     let game = Game::new_instructions([
-        GameInstruction::new(Rule::Convert(TargetDestination::new('r', 'e')), "arbitrary"),
-        GameInstruction::new(Rule::Convert(TargetDestination::new('i', 't')), "warranties"),
-        GameInstruction::new(Rule::Convert(TargetDestination::new('n', 'o')), "signatures"),
-        GameInstruction::new(Rule::Remove(Remove('h')), "horoscope"),
-        GameInstruction::new(Rule::Duplicate(Duplicate::new('c', 2)), "helicopter"),
-        GameInstruction::new(Rule::Switch(TargetDestination::new('c', 'e')), "convicted"),
+        ChallengeInstruction::new(Rule::Convert(TargetDestination::new('r', 'e')), "arbitrary"),
+        ChallengeInstruction::new(Rule::Convert(TargetDestination::new('i', 't')), "warranties"),
+        ChallengeInstruction::new(Rule::Convert(TargetDestination::new('n', 'o')), "signatures"),
+        ChallengeInstruction::new(Rule::Remove(Remove('h')), "horoscope"),
+        ChallengeInstruction::new(Rule::Duplicate(Duplicate::new('c', 2)), "helicopter"),
+        ChallengeInstruction::new(Rule::Switch(TargetDestination::new('c', 'e')), "convicted"),
     ]);
 
     let console = console::Term::stdout();

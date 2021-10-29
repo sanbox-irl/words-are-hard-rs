@@ -1,6 +1,7 @@
+use serde::{Deserialize, Serialize};
 use std::fmt;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Rule {
     Convert(TargetDestination),
     Duplicate(Duplicate),
@@ -73,7 +74,7 @@ fn switcher(td: &TargetDestination, input: &str) -> String {
     output_string
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default, Serialize, Deserialize)]
 pub struct TargetDestination {
     pub target: char,
     pub destination: char,
@@ -85,7 +86,7 @@ impl TargetDestination {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default, Serialize, Deserialize)]
 pub struct Duplicate {
     pub target: char,
     pub count: usize,
@@ -111,7 +112,7 @@ impl Duplicate {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default, Serialize, Deserialize)]
 pub struct Remove(pub char);
 
 impl Remove {

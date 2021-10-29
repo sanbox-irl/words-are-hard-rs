@@ -33,11 +33,17 @@ impl Rule {
 
 impl fmt::Display for Rule {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        // match self {
+        //     Rule::Convert(cnv) => write!(f, "{} \u{f061} {}", cnv.target, cnv.destination),
+        //     Rule::Duplicate(dep) => write!(f, "{} \u{f057} {}", dep.target, dep.count),
+        //     Rule::Remove(rm) => write!(f, "\u{f1f8} {}", rm.0),
+        //     Rule::Switch(td) => write!(f, "{} \u{f07e} {}", td.target, td.destination),
+        // }
         match self {
-            Rule::Convert(cnv) => write!(f, "{} \u{f061} {}", cnv.target, cnv.destination),
-            Rule::Duplicate(dep) => write!(f, "{} \u{f057} {}", dep.target, dep.count),
-            Rule::Remove(rm) => write!(f, "\u{f1f8} {}", rm.0),
-            Rule::Switch(td) => write!(f, "{} \u{f07e} {}", td.target, td.destination),
+            Rule::Convert(cnv) => write!(f, "Convert {} to {}", cnv.target, cnv.destination),
+            Rule::Duplicate(dep) => write!(f, "Duplicate {} {} times", dep.target, dep.count),
+            Rule::Remove(rm) => write!(f, "Delete {}", rm.0),
+            Rule::Switch(td) => write!(f, "{} switches position with the next {}", td.target, td.destination),
         }
     }
 }

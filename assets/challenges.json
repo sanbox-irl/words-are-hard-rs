@@ -29,6 +29,15 @@
     },
     {
       "rule": {
+        "Convert": {
+          "target": "p",
+          "destination": "c"
+        }
+      },
+      "word": "responding"
+    },
+    {
+      "rule": {
         "Remove": "h"
       },
       "word": "horoscope"

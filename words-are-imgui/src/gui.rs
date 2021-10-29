@@ -1,7 +1,7 @@
 use std::collections::HashMap;
-use words_are_hard::{ChallengeInstruction, Game};
+use words_are_hard::{ChallengeInstruction, Game, RoundData, Rule};
 
-use dauga::imgui::Ui;
+use dauga::{imgui::Ui, smol_rgb::EncodedRgb, utils};
 
 pub struct Gui {
     games: HashMap<String, ManagedGame>,
@@ -29,40 +29,8 @@ impl Gui {
                 .begin()
             {
                 if let Some(round_data) = game.game.round_data() {
-                    ui.text("Rules:");
-                    for (i, rule) in round_data.rules.iter().enumerate() {
-                        ui.text(format!("{}. {}", i + 1, rule));
-                    }
-
-                    ui.spacing();
-
-                    ui.text("Output:");
-                    ui.same_line();
-                    ui.text_colored(
-                        [251.0 / 255.0, 162.0 / 255.0, 204.0 / 255.0, 1.0],
-                        &round_data.word_data.hard_word,
-                    );
-
-                    ui.spacing();
-
-                    let mut pressed_enter = ui
-                        .input_text("What is the Input?", &mut game.guess)
-                        .enter_returns_true(true)
-                        .build();
-
-                    ui.same_line();
-                    pressed_enter |= ui.button(dauga::font_awesome::strs::CHECK);
-                    ui.same_line();
-                    if ui.button(dauga::font_awesome::strs::TIMES) {
-                        game.guess.clear();
-                    }
-
-                    if pressed_enter {
-                        if round_data.word_data.secret == game.guess {
-                            game.game.advance_game();
-                        }
-
-                        game.guess.clear();
+                    if display_round_data(ui, &round_data, &mut game.guess, &mut game.set_keyboard_focus) {
+                        game.game.advance_game();
                     }
                 } else {
                     ui.text("Good job! Thanks for playing!");
@@ -93,6 +61,7 @@ impl Gui {
                             ManagedGame {
                                 game: Game::new_instructions(instructions),
                                 guess: String::new(),
+                                set_keyboard_focus: true,
                             },
                         );
                     }
@@ -111,6 +80,7 @@ impl Gui {
                             ManagedGame {
                                 game: Game::new_instructions(instructions),
                                 guess: String::new(),
+                                set_keyboard_focus: true,
                             },
                         );
                     }
@@ -120,7 +90,163 @@ impl Gui {
     }
 }
 
+fn display_round_data(ui: &Ui, round_data: &RoundData, guess: &mut String, set_keyboard_focus: &mut bool) -> bool {
+    ui.text("Rules:");
+    for (i, rule) in round_data.rules.iter().enumerate() {
+        ui.text_colored(
+            EncodedRgb::new(251, 162, 204, 255).to_encoded_f32s(),
+            format!("{}.", i + 1),
+        );
+        ui.same_line();
+
+        let txt = match rule {
+            Rule::Convert(cnv) => format!("{} \u{f061} {}", cnv.target, cnv.destination),
+            Rule::Duplicate(dep) => format!("{} \u{f057} {}", dep.target, dep.count),
+            Rule::Remove(rm) => format!("\u{f1f8} {}", rm.0),
+            Rule::Switch(td) => format!("{} \u{f362} {}", td.target, td.destination),
+        };
+        ui.text(txt);
+
+        if let Some(_t) = utils::raw_help_anywhere(ui) {
+            match rule {
+                Rule::Convert(_) => {
+                    ui.text_colored(EncodedRgb::new(251, 162, 204, 255).to_encoded_f32s(), "a \u{f061} b");
+                    ui.same_line();
+                    ui.text(", converts all 'a' to 'b'");
+
+                    ui.spacing();
+                    ui.spacing();
+                    ui.spacing();
+
+                    ui.text("Input: 'adam'");
+                    ui.text_colored(EncodedRgb::new(251, 162, 204, 255).to_encoded_f32s(), "d \u{f061} r");
+                    ui.text("Output: 'aram'");
+
+                    ui.spacing();
+                    ui.spacing();
+                    ui.spacing();
+
+                    ui.text("Remember: rules execute top to bottom, and effects can stack:");
+                    ui.text("Input: 'eve'");
+                    ui.text_colored(EncodedRgb::new(251, 162, 204, 255).to_encoded_f32s(), "v \u{f061} e");
+                    ui.text_colored(EncodedRgb::new(251, 162, 204, 255).to_encoded_f32s(), "e \u{f061} q");
+                    ui.text("Output: 'qqq'");
+                }
+                Rule::Duplicate(_) => {
+                    ui.text_colored(EncodedRgb::new(251, 162, 204, 255).to_encoded_f32s(), "o \u{f057} 3");
+                    ui.same_line();
+                    ui.text(", duplicates all 'o' 3 times");
+
+                    ui.spacing();
+                    ui.spacing();
+                    ui.spacing();
+
+                    ui.text("Input: 'snake'");
+                    ui.text_colored(EncodedRgb::new(251, 162, 204, 255).to_encoded_f32s(), "n \u{f057} 2");
+                    ui.text("Output: 'snnake'");
+
+                    ui.spacing();
+                    ui.spacing();
+                    ui.spacing();
+
+                    ui.text("Remember: rules execute top to bottom, and effects can stack:");
+                    ui.text("Input: 'plasma'");
+                    ui.text_colored(EncodedRgb::new(251, 162, 204, 255).to_encoded_f32s(), "l \u{f057} 3");
+                    ui.text_colored(EncodedRgb::new(251, 162, 204, 255).to_encoded_f32s(), "l \u{f061} a");
+                    ui.text("Output: 'paaaasma'");
+                }
+                Rule::Remove(_) => {
+                    ui.text_colored(EncodedRgb::new(251, 162, 204, 255).to_encoded_f32s(), "\u{f1f8} z");
+                    ui.same_line();
+                    ui.text(", removes all 'z'");
+
+                    ui.spacing();
+                    ui.spacing();
+                    ui.spacing();
+
+                    ui.text("Input: 'horizon'");
+                    ui.text_colored(EncodedRgb::new(251, 162, 204, 255).to_encoded_f32s(), "\u{f1f8} o");
+                    ui.text("Output: 'hrizn'");
+
+                    ui.spacing();
+                    ui.spacing();
+                    ui.spacing();
+
+                    ui.text("Remember: rules execute top to bottom, and effects can stack:");
+                    ui.text("Input: 'sunny'");
+                    ui.text_colored(EncodedRgb::new(251, 162, 204, 255).to_encoded_f32s(), "s \u{f061} u");
+                    ui.text_colored(EncodedRgb::new(251, 162, 204, 255).to_encoded_f32s(), "\u{f1f8} u");
+                    ui.text("Output: 'nny'");
+                }
+                Rule::Switch(_) => {
+                    ui.text_colored(EncodedRgb::new(251, 162, 204, 255).to_encoded_f32s(), "g \u{f362} c");
+                    ui.same_line();
+                    ui.text(", each 'g' attempts to switch position with the next 'c'. If no 'c' can be found, the 'g' stays");
+
+                    ui.spacing();
+                    ui.spacing();
+                    ui.spacing();
+
+                    ui.text("Input: 'classification'");
+                    ui.text_colored(EncodedRgb::new(251, 162, 204, 255).to_encoded_f32s(), "s \u{f362} f");
+                    ui.text("Output: 'clafsisication'");
+
+                    ui.spacing();
+                    ui.spacing();
+                    ui.spacing();
+
+                    ui.text("Remember: rules execute top to bottom, and effects can stack:");
+                    ui.text("Input: 'orangutang'");
+                    ui.text_colored(EncodedRgb::new(251, 162, 204, 255).to_encoded_f32s(), "o \u{f061} a");
+                    ui.text_colored(EncodedRgb::new(251, 162, 204, 255).to_encoded_f32s(), "a \u{f362} g");
+                    ui.text("Output: 'grgnautana'");
+                }
+            }
+        }
+    }
+
+    ui.spacing();
+
+    ui.text("Output:");
+    ui.same_line();
+    ui.text_colored(
+        EncodedRgb::new(251, 162, 204, 255).to_encoded_f32s(),
+        &round_data.word_data.hard_word,
+    );
+
+    ui.spacing();
+
+    if *set_keyboard_focus {
+        ui.set_keyboard_focus_here();
+        *set_keyboard_focus = false;
+    }
+    let mut pressed_enter = ui
+        .input_text("What is the Input?", guess)
+        .enter_returns_true(true)
+        .build();
+    if pressed_enter {
+        *set_keyboard_focus = true;
+    }
+
+    ui.same_line();
+    pressed_enter |= ui.button(dauga::font_awesome::strs::CHECK);
+    ui.same_line();
+    if ui.button(dauga::font_awesome::strs::TIMES) {
+        guess.clear();
+    }
+
+    if pressed_enter {
+        let success = round_data.word_data.secret == *guess;
+        guess.clear();
+
+        success
+    } else {
+        false
+    }
+}
+
 pub struct ManagedGame {
     game: Game,
     guess: String,
+    set_keyboard_focus: bool,
 }

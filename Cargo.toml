@@ -1,19 +1,5 @@
-[package]
-name = "words-are-hard"
-version = "0.1.0"
-edition = "2021"
-
-[lib]
-name = "words_are_hard"
-path = "src/lib.rs"
-
-[[bin]]
-name = "words_are_hard_bin"
-path = "src/bin.rs"
-
-[dependencies]
-dialoguer = "0.9"
-console = "0.15"
-rand = "0.8"
-serde_json = "1.0"
-serde = { version = "1.0", features = ["derive"] }
+[workspace]
+members = [
+    "words-are-hard",
+    "words-are-text"
+]

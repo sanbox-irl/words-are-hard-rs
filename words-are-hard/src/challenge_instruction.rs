@@ -2,8 +2,9 @@ use std::collections::HashMap;
 
 use crate::Rule;
 
+/// Deserialize the available challenges
 pub fn deserialize_challenges() -> HashMap<String, ChallengeInstruction> {
-    let challenges = include_str!("../assets/challenges.json");
+    let challenges = include_str!("../../assets/challenges.json");
 
     serde_json::from_str(challenges).unwrap()
 }

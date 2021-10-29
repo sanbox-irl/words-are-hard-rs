@@ -1,0 +1,9 @@
+[package]
+name = "words-are-text"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+dialoguer = "0.9"
+console = "0.15"
+words-are-hard = { path = "../words-are-hard" }

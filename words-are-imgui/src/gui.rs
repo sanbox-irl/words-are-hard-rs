@@ -1,10 +1,10 @@
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use words_are_hard::{ChallengeInstruction, Game, RoundData, Rule};
 
 use dauga::{imgui::Ui, smol_rgb::EncodedRgb, utils};
 
 pub struct Gui {
-    games: HashMap<String, ManagedGame>,
+    games: BTreeMap<String, ManagedGame>,
 }
 
 impl Gui {
@@ -14,7 +14,7 @@ impl Gui {
         }
     }
 
-    pub fn draw(&mut self, ui: &Ui, game_data: &HashMap<String, Vec<ChallengeInstruction>>) {
+    pub fn draw(&mut self, ui: &Ui, game_data: &BTreeMap<String, Vec<ChallengeInstruction>>) {
         self.menu_bar(ui, game_data);
 
         let mut game_delete = None;
@@ -47,13 +47,13 @@ impl Gui {
         }
     }
 
-    pub fn menu_bar(&mut self, ui: &Ui, game_data: &HashMap<String, Vec<ChallengeInstruction>>) {
+    pub fn menu_bar(&mut self, ui: &Ui, game_data: &BTreeMap<String, Vec<ChallengeInstruction>>) {
         if let Some(_t) = ui.begin_main_menu_bar() {
-            if let Some(_t) = ui.begin_menu("New Game") {
-                for (name, instructions) in game_data.iter().filter(|(n, _)| !n.contains("tutorial")) {
+            if let Some(_t) = ui.begin_menu("Tutorials") {
+                for (name, instructions) in game_data.iter().filter(|(n, _)| n.contains("tutorial")) {
                     if ui
                         .menu_item_config(name)
-                        .enabled(!self.games.contains_key(name))
+                        .selected(self.games.contains_key(name))
                         .build()
                     {
                         self.games.insert(
@@ -68,11 +68,11 @@ impl Gui {
                 }
             }
 
-            if let Some(_t) = ui.begin_menu("Tutorials") {
-                for (name, instructions) in game_data.iter().filter(|(n, _)| n.contains("tutorial")) {
+            if let Some(_t) = ui.begin_menu("Challenge") {
+                for (name, instructions) in game_data.iter().filter(|(n, _)| !n.contains("tutorial")) {
                     if ui
                         .menu_item_config(name)
-                        .enabled(!self.games.contains_key(name))
+                        .selected(self.games.contains_key(name))
                         .build()
                     {
                         self.games.insert(
@@ -84,6 +84,23 @@ impl Gui {
                             },
                         );
                     }
+                }
+
+                ui.separator();
+
+                if ui
+                    .menu_item_config("Random")
+                    .selected(self.games.contains_key("Random"))
+                    .build()
+                {
+                    self.games.insert(
+                        "Random".to_string(),
+                        ManagedGame {
+                            game: Game::new(),
+                            guess: String::new(),
+                            set_keyboard_focus: true,
+                        },
+                    );
                 }
             }
         }

@@ -618,7 +618,6 @@ pub static WORDS: &[&str] = &[
     "resistance",
     "baltimore",
     "candidates",
-    "charlotte",
     "biological",
     "transition",
     "preferences",

@@ -4,4 +4,3 @@ members = [
     "words-are-text",
     "words-are-imgui"
 ]
-default-members = ["words-are-text"]

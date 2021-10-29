@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 use dauga::{glam::UVec2, Accumulator, AnyResult, Clock, GuiRenderer, Input, Platform, ThemeManager, Window};
 use words_are_hard::ChallengeInstruction;
@@ -6,7 +6,7 @@ use words_are_hard::ChallengeInstruction;
 use crate::gui::Gui;
 
 pub struct Words {
-    game_data: HashMap<String, Vec<ChallengeInstruction>>,
+    game_data: BTreeMap<String, Vec<ChallengeInstruction>>,
     gui: Gui,
 
     imgui_platform: Platform,
@@ -17,7 +17,7 @@ pub struct Words {
 
 impl Words {
     pub fn new() -> AnyResult<Self> {
-        let window = Window::new("Tango", UVec2::new(1920, 1080))?;
+        let window = Window::new("words are hard", UVec2::new(1920, 1080))?;
         let mut imgui_platform = Platform::new(&window);
 
         let input = Input::new();
@@ -31,7 +31,7 @@ impl Words {
             dauga::smol_rgb::EncodedRgb::new(254, 238, 237, 255),
         )?;
 
-        let game_data = words_are_hard::deserialize_challenges("assets/challenges.json");
+        let game_data = words_are_hard::load_challenges().into_iter().collect();
 
         let me = Self {
             gui: Gui::new(),

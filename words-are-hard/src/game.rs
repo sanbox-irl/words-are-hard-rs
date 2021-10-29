@@ -57,6 +57,9 @@ impl Game {
     }
 
     pub fn round_data(&self) -> Option<RoundData<'_>> {
+        if self.len == self.current_round {
+            return None;
+        }
         let word_data = &self.words[self.current_round];
         let rules = &self.rules[0..=self.current_round];
 

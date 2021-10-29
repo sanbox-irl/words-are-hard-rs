@@ -60,5 +60,257 @@
       },
       "word": "convicted"
     }
+  ],
+  "easy": [
+    {
+      "rule": {
+        "Convert": {
+          "target": "r",
+          "destination": "g"
+        }
+      },
+      "word": "sugar"
+    },
+    {
+      "rule": {
+        "Convert": {
+          "target": "w",
+          "destination": "l"
+        }
+      },
+      "word": "flower"
+    },
+    {
+      "rule": {
+        "Convert": {
+          "target": "a",
+          "destination": "i"
+        }
+      },
+      "word": "raindrops"
+    },
+    {
+      "rule": {
+        "Switch": {
+          "target": "o",
+          "destination": "l"
+        }
+      },
+      "word": "doorbells"
+    },
+    {
+      "rule": {
+        "Convert": {
+          "target": "i",
+          "destination": "q"
+        }
+      },
+      "word": "satin"
+    },
+    {
+      "rule": {
+        "Remove": "c"
+      },
+      "word": "package"
+    },
+    {
+      "rule": {
+        "Convert": {
+          "target": "f",
+          "destination": "i"
+        }
+      },
+      "word": "snowflakes"
+    }
+  ],
+  "hard": [
+    {
+      "rule": {
+        "Convert": {
+          "target": "o",
+          "destination": "a"
+        }
+      },
+      "word": "commodification"
+    },
+    {
+      "rule": {
+        "Switch": {
+          "target": "w",
+          "destination": "l"
+        }
+      },
+      "word": "owl"
+    },
+    {
+      "rule": {
+        "Duplicate": {
+          "target": "l",
+          "count": 2
+        }
+      },
+      "word": "woolly"
+    },
+    {
+      "rule": {
+        "Convert": {
+          "target": "s",
+          "destination": "t"
+        }
+      },
+      "word": "salubrious"
+    },
+    {
+      "rule": {
+        "Remove": "w"
+      },
+      "word": "wolfskin"
+    },
+    {
+      "rule": {
+        "Switch": {
+          "target": "r",
+          "destination": "t"
+        }
+      },
+      "word": "wordless"
+    },
+    {
+      "rule": {
+        "Convert": {
+          "target": "i",
+          "destination": "s"
+        }
+      },
+      "word": "swill"
+    }
+  ],
+  "tutorial-convert": [
+    {
+      "rule": {
+        "Convert": {
+          "target": "h",
+          "destination": "f"
+        }
+      },
+      "word": "hello"
+    },
+    {
+      "rule": {
+        "Convert": {
+          "target": "r",
+          "destination": "s"
+        }
+      },
+      "word": "other"
+    },
+    {
+      "rule": {
+        "Convert": {
+          "target": "f",
+          "destination": "s"
+        }
+      },
+      "word": "southern"
+    }
+  ],
+  "tutorial-duplicate": [
+    {
+      "rule": {
+        "Duplicate": {
+          "target": "h",
+          "count": 2
+        }
+      },
+      "word": "hello"
+    },
+    {
+      "rule": {
+        "Convert": {
+          "target": "e",
+          "destination": "t"
+        }
+      },
+      "word": "wife"
+    },
+    {
+      "rule": {
+        "Duplicate": {
+          "target": "t",
+          "count": 3
+        }
+      },
+      "word": "the"
+    }
+  ],
+  "tutorial-remove": [
+    {
+      "rule": {
+        "Remove": "n"
+      },
+      "word": "orange"
+    },
+    {
+      "rule": {
+        "Convert": {
+          "target": "i",
+          "destination": "n"
+        }
+      },
+      "word": "pink"
+    },
+    {
+      "rule": {
+        "Convert": {
+          "target": "l",
+          "destination": "b"
+        }
+      },
+      "word": "blue"
+    },
+    {
+      "rule": {
+        "Remove": "b"
+      },
+      "word": "purple"
+    }
+  ],
+  "tutorial-switch": [
+    {
+      "rule": {
+        "Switch": {
+          "target": "h",
+          "destination": "l"
+        }
+      },
+      "word": "hello"
+    },
+    {
+      "rule": {
+        "Switch": {
+          "target": "b",
+          "destination": "c"
+        }
+      },
+      "word": "cab"
+    },
+    {
+      "rule": {
+        "Switch": {
+          "target": "a",
+          "destination": "b"
+        }
+      },
+      "word": "abba"
+    },
+    {
+      "rule": {
+        "Switch": {
+          "target": "l",
+          "destination": "s"
+        }
+      },
+      "word": "fullness"
+    }
   ]
 }

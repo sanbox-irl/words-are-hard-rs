@@ -1,0 +1,79 @@
+name: Rust
+
+on: [push]
+
+jobs:
+  build-mac:
+    runs-on: macos-latest
+    # if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: setup-git-credentials
+        uses: fusion-engineering/setup-git-credentials@v2.0.6
+        with:
+          credentials: ${{ secrets.GIT_ACCESS_TOKEN }}
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: words-are-hard
+
+      - name: Checkout Dauga
+        uses: actions/checkout@v2
+        with:
+          repository: "NPC-Studio/dauga"
+          path: dauga
+          token: ${{ secrets.GIT_ACCESS_TOKEN }}
+
+      - name: Install bundle tool
+        run: cargo install cargo-bundle
+
+      - name: Build
+        run: cargo bundle --release
+        working-directory: ./words-are-hard/words-are-imgui
+
+      - name: Compress
+        run: ditto -c -k --sequesterRsrc --keepParent ./words-are-hard/target/release/bundle/osx/words are hard.app words-are-hard-darwin.zip
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: words-are-hard-darwin.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-pc:
+    runs-on: windows-latest
+    # if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: setup-git-credentials
+        uses: fusion-engineering/setup-git-credentials@v2.0.6
+        with:
+          credentials: ${{ secrets.GIT_ACCESS_TOKEN }}
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: words-are-hard
+
+      - name: Checkout Dauga
+        uses: actions/checkout@v2
+        with:
+          repository: "NPC-Studio/dauga"
+          path: dauga
+          token: ${{ secrets.GIT_ACCESS_TOKEN }}
+
+      - name: Build
+        run: cargo build -p words-are-imgui --release
+        working-directory: ./words-are-hard
+
+      - name: Compress
+        run: Compress-Archive words-are-hard/target/release/words-are-imgui.exe -DestinationPath "words-are-hard-windows.zip"
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: words-are-hard-windows.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

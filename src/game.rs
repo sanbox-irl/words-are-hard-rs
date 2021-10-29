@@ -60,10 +60,7 @@ where
     }
 
     pub fn iter(&self) -> Iter<'_, N> {
-        Iter {
-            game: self,
-            cursor: 0,
-        }
+        Iter { game: self, cursor: 0 }
     }
 }
 

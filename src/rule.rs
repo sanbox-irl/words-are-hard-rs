@@ -12,9 +12,7 @@ impl Rule {
     /// Applies the rule to the input, returning the output string.
     pub fn apply(self, input: &str) -> String {
         match self {
-            Rule::Convert(cnv_data) => {
-                input.replace(cnv_data.target, &format!("{}", cnv_data.destination))
-            }
+            Rule::Convert(cnv_data) => input.replace(cnv_data.target, &format!("{}", cnv_data.destination)),
             Rule::Duplicate(dep) => dep.apply(input),
             Rule::Remove(rmv) => rmv.apply(input),
             Rule::Switch(target_destination) => switcher(&target_destination, input),
@@ -81,10 +79,22 @@ pub struct TargetDestination {
     pub destination: char,
 }
 
+impl TargetDestination {
+    pub fn new(target: char, destination: char) -> Self {
+        Self { target, destination }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
 pub struct Duplicate {
     pub target: char,
     pub count: usize,
+}
+
+impl Duplicate {
+    pub fn new(target: char, count: usize) -> Self {
+        Self { target, count }
+    }
 }
 
 impl Duplicate {
@@ -137,10 +147,7 @@ mod tests {
 
     #[test]
     fn duplicate() {
-        let ex = Duplicate {
-            target: 'b',
-            count: 3,
-        };
+        let ex = Duplicate { target: 'b', count: 3 };
 
         assert_eq!(ex.apply("bob"), "bbbobbb");
         assert_eq!(ex.apply("bbb"), "bbbbbbbbb");

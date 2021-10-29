@@ -3,7 +3,15 @@ use words_are_hard::*;
 
 fn main() {
     let mut guess: String;
-    let game = Game::new();
+
+    let game = Game::new_instructions([
+        GameInstruction::new(Rule::Convert(TargetDestination::new('r', 'e')), "arbitrary"),
+        GameInstruction::new(Rule::Convert(TargetDestination::new('i', 't')), "warranties"),
+        GameInstruction::new(Rule::Convert(TargetDestination::new('n', 'o')), "signatures"),
+        GameInstruction::new(Rule::Remove(Remove('h')), "horoscope"),
+        GameInstruction::new(Rule::Duplicate(Duplicate::new('c', 2)), "helicopter"),
+        GameInstruction::new(Rule::Switch(TargetDestination::new('c', 'e')), "convicted"),
+    ]);
 
     let console = console::Term::stdout();
 
@@ -23,10 +31,7 @@ fn main() {
                 println!("{}", round_data.word_data.secret);
             }
 
-            println!(
-                "Hard Word: {}",
-                style(&round_data.word_data.hard_word).red()
-            );
+            println!("Hard Word: {}", style(&round_data.word_data.hard_word).red());
             println!();
             print!("What was the {}?", style("original word").yellow());
 

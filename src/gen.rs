@@ -27,20 +27,14 @@ pub fn generate_word(
         let mut chars = word.chars();
         vec![chars.next().unwrap(), chars.last().unwrap()]
     } else {
-        word.chars()
-            .filter(move |v| choices.contains(v) == false)
-            .collect()
+        word.chars().filter(move |v| choices.contains(v) == false).collect()
     };
 
     (word, selection.into_iter())
 }
 
 /// Generates a new rule
-pub fn generate_rule(
-    round: usize,
-    rng: &mut ThreadRng,
-    choices: impl Iterator<Item = char> + Clone,
-) -> Rule {
+pub fn generate_rule(round: usize, rng: &mut ThreadRng, choices: impl Iterator<Item = char> + Clone) -> Rule {
     // okay if we're in the first three rounds, we ALWAYS do a conversion rule...
     if round < 3 {
         let target = choices.choose(rng).unwrap();

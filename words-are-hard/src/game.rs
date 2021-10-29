@@ -26,7 +26,10 @@ impl Game<8> {
                 hard_word = rule.apply(&hard_word);
             }
 
-            words[i] = WordData { secret, hard_word };
+            words[i] = WordData {
+                secret: secret.to_string(),
+                hard_word,
+            };
         }
 
         Game { rules, words }
@@ -77,7 +80,7 @@ pub struct RoundData<'a> {
 
 #[derive(Debug, Default)]
 pub struct WordData {
-    pub secret: &'static str,
+    pub secret: String,
     pub hard_word: String,
 }
 

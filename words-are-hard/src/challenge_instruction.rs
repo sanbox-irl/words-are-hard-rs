@@ -3,20 +3,23 @@ use std::collections::HashMap;
 use crate::Rule;
 
 /// Deserialize the available challenges
-pub fn deserialize_challenges() -> HashMap<String, ChallengeInstruction> {
-    let challenges = include_str!("../../assets/challenges.json");
+pub fn deserialize_challenges<P: AsRef<std::path::Path>>(path: P) -> HashMap<String, ChallengeInstruction> {
+    let txt = std::fs::read_to_string(path).unwrap();
 
-    serde_json::from_str(challenges).unwrap()
+    serde_json::from_str(&txt).unwrap()
 }
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct ChallengeInstruction {
     pub rule: Rule,
-    pub word: &'static str,
+    pub word: String,
 }
 
 impl ChallengeInstruction {
-    pub const fn new(rule: Rule, word: &'static str) -> Self {
-        Self { rule, word }
+    pub fn new(rule: Rule, word: &'static str) -> Self {
+        Self {
+            rule,
+            word: word.to_string(),
+        }
     }
 }

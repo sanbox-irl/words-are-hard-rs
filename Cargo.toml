@@ -1,5 +1,7 @@
 [workspace]
 members = [
     "words-are-hard",
-    "words-are-text"
+    "words-are-text",
+    "words-are-imgui"
 ]
+default-members = ["words-are-text"]

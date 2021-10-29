@@ -6,7 +6,7 @@ pub mod gen;
 
 mod challenge_instruction;
 mod game;
-pub use challenge_instruction::ChallengeInstruction;
+pub use challenge_instruction::{deserialize_challenges, ChallengeInstruction};
 pub use game::*;
 
 mod rule;
